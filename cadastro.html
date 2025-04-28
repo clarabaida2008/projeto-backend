@@ -6,12 +6,17 @@
     <title>Cadastrar Estudante</title>
 </head>
 <body>
-    <form action="">
+    <form onsubmit="event.preventDefault();trataform()">
         <label for="id">id</label>
-        <input type="text" id="id">
+        <input type="text" id="id" name="id">
         <label for="nome">nome</label>
-        <input type="text" id="nome">
+        <input type="text" id="nome" name="nome">
         <input type="submit" value="Cadastrar">
     </form>
+    <script>
+        function trataform(){
+            alert("Cheguei AQUI!")
+        }
+    </script>
 </body>
 </html>
