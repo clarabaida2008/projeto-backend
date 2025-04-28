@@ -6,7 +6,7 @@
     <title>Título Modificado</title>
 </head>
 <body>
-    <h1>O Tere é lindo!</h1>
+    <h1>Lista de estudantes!</h1>
     <ul id="minhalista">
 
     </ul>
@@ -18,6 +18,14 @@
                 const dados = await resposta.json()
                 console.log(dados)
                 console.log(dados[0].nome)
+                const ul = document.getElementById("minhalista")
+                for (let i = 0; i < dados.length; i++) {
+                    const element = dados[i];
+                    const novoli = document.createElement("li")
+                    novoli.innerText = element.nome
+                    ul.appendChild(novoli)
+                }
+
                 //Criem li a partir do vetor dados
                 //Coloque o texto que vem do banco no li
                 //Adicione o li na ul com id "minhalista" 
