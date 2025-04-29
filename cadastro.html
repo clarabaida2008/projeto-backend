@@ -40,7 +40,7 @@
                 }
                 if(resposta.status===400){
                     const dados = await resposta.json()
-                    alert(`Erro do lado do backend:" ${dados.mensagem}`)
+                    alert(`Erro do lado do backend:"\n${dados.mensagem}`)
                 }
                 if(resposta.status===404){
                     alert("Erro não identificado.")
