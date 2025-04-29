@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Estudante</title>
 </head>
+
 <body>
     <form onsubmit="event.preventDefault();trataform()">
         <label for="id">id</label>
@@ -14,9 +16,18 @@
         <input type="submit" value="Cadastrar">
     </form>
     <script>
-        function trataform(){
-            alert("Cheguei AQUI!")
+        function trataform() {
+            const inputId = document.getElementById("id")
+            const inputNome = document.getElementById("nome")
+            const id = inputId.value
+            const nome = inputNome.value
+
+            const objEstudante = {
+                id: id,
+                nome:nome
+            }
         }
     </script>
 </body>
+
 </html>
