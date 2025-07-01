@@ -4,19 +4,16 @@ import cors from '@fastify/cors'
 const app = fastify()
 app.register(cors)
 
-app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    reply.send("Fastify Funcionando")
-})
-app.get('/estudantes', async (request: FastifyRequest, reply: FastifyReply) => {
+app.get('/produtos', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
         const conn =  await mysql.createConnection({
             host: "localhost",
             user: 'root',
             password: "",
-            database: 'banco1023a',
+            database: 'tere',
             port: 3306
         })
-        const resultado =  await conn.query("SELECT * FROM estudantes")
+        const resultado =  await conn.query("SELECT * FROM produtos")
         const [dados, camposTabela] = resultado
         reply.status(200).send(dados)
     }
@@ -42,19 +39,20 @@ app.get('/estudantes', async (request: FastifyRequest, reply: FastifyReply) => {
         }
     }
 })
-app.post('/estudantes', async (request: FastifyRequest, reply: FastifyReply) => {
-    const {id,nome} = request.body as any
+app.post('/produtos', async (request: FastifyRequest, reply: FastifyReply) => {
+    const {id,nome,preco,categoria} = request.body as any
     try {
         const conn =  await mysql.createConnection({
             host: "localhost",
             user: 'root',
             password: "",
-            database: 'banco1023a',
+            database: 'tere',
             port: 3306
         })
-        const resultado =  await conn.query("INSERT INTO estudantes (id,nome) VALUES (?,?)",[id,nome])
+        const resultado =  await conn.query("INSERT INTO produtos (id,nome,preco,categoria) VALUES (?,?,?,?)",[id,nome,preco,categoria])
         const [dados, camposTabela] = resultado
-        reply.status(200).send(dados)
+        console.log(dados)
+        reply.status(200).send({id,nome,preco,categoria})
     }
     catch (erro: any) {
         switch (erro.code) {
