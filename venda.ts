@@ -4,16 +4,16 @@ import cors from '@fastify/cors'
 const app = fastify()
 app.register(cors)
 
-app.get('/produtos', async (request: FastifyRequest, reply: FastifyReply) => {
+app.get('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
         const conn =  await mysql.createConnection({
             host: "localhost",
             user: 'root',
             password: "",
-            database: 'tere',
+            database: 'bancomercado',
             port: 3306
         })
-        const resultado =  await conn.query("SELECT * FROM produtos")
+        const resultado =  await conn.query("SELECT * FROM venda")
         const [dados, camposTabela] = resultado
         reply.status(200).send(dados)
     }
@@ -39,20 +39,20 @@ app.get('/produtos', async (request: FastifyRequest, reply: FastifyReply) => {
         }
     }
 })
-app.post('/produtos', async (request: FastifyRequest, reply: FastifyReply) => {
-    const {id,nome,preco,categoria} = request.body as any
+app.post('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => {
+    const {idfornecedor,nomefornecedor,cnpjfornecedor,cidadefornecedor} = request.body as any
     try {
         const conn =  await mysql.createConnection({
             host: "localhost",
             user: 'root',
             password: "",
-            database: 'tere',
+            database: 'bancomercado',
             port: 3306
         })
-        const resultado =  await conn.query("INSERT INTO produtos (id,nome,preco,categoria) VALUES (?,?,?,?)",[id,nome,preco,categoria])
+        const resultado =  await conn.query("INSERT INTO fornecedor (idfornecedor,nomefornecedor,cnpjfornecedor,cidadefornecedor) VALUES (?,?,?,?)",[idfornecedor,nomefornecedor,cnpjfornecedor,cidadefornecedor])
         const [dados, camposTabela] = resultado
         console.log(dados)
-        reply.status(200).send({id,nome,preco,categoria})
+        reply.status(200).send({idfornecedor,nomefornecedor,cnpjfornecedor,cidadefornecedor})
     }
     catch (erro: any) {
         switch (erro.code) {
@@ -80,6 +80,10 @@ app.post('/produtos', async (request: FastifyRequest, reply: FastifyReply) => {
     
     }
 })
+
+app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
+    reply.send({ mensagem: "Backend está rodando!" });
+});
 
 app.listen({ port: 8000 }, (err, address) => {
     if (err) {
