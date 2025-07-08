@@ -81,14 +81,6 @@ app.post('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
     }
 })
 
-app.listen({ port: 8000 }, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`)
-})
-
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 app.get('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => {
@@ -100,7 +92,7 @@ app.get('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => {
             database: 'bancomercado',
             port: 3306
         })
-        const resultado =  await conn.query("SELECT * FROM venda")
+        const resultado =  await conn.query("SELECT * FROM fornecedor")
         const [dados, camposTabela] = resultado
         reply.status(200).send(dados)
     }
@@ -166,18 +158,6 @@ app.post('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => 
         }
     
     }
-})
-
-app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    reply.send({ mensagem: "Backend está rodando!" });
-});
-
-app.listen({ port: 8000 }, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`)
 })
 
 /*////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -259,25 +239,12 @@ app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
     }
 })
 
-app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    reply.send({ mensagem: "Backend está rodando!" });
-});
-
-app.listen({ port: 8000 }, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`)
-})
-
-
 /*////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 app.get('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
         const conn =  await mysql.createConnection({
-            host: "localhost",
+            host: "localhost2",
             user: 'root',
             password: "",
             database: 'bancomercado',
@@ -309,20 +276,20 @@ app.get('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => 
         }
     }
 })
-app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
-    const {idfuncionario,nomefuncionario,funcaofuncionario,cpf} = request.body as any
+app.post('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => {
+    const {idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario} = request.body as any
     try {
         const conn =  await mysql.createConnection({
-            host: "localhost",
+            host: "localhost2",
             user: 'root',
             password: "",
             database: 'bancomercado',
             port: 3306
         })
-        const resultado =  await conn.query("INSERT INTO funcionario (idfuncionario,nomefuncionario,funcaofuncionario,cpf) VALUES (?,?,?,?)",[idfuncionario,nomefuncionario,funcaofuncionario,cpf])
+        const resultado =  await conn.query("INSERT INTO funcionario (idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario) VALUES (?,?,?,?)",[idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario])
         const [dados, camposTabela] = resultado
         console.log(dados)
-        reply.status(200).send({idfuncionario,nomefuncionario,funcaofuncionario,cpf})
+        reply.status(200).send({idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario})
     }
     catch (erro: any) {
         switch (erro.code) {
@@ -350,10 +317,6 @@ app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
     
     }
 })
-
-app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    reply.send({ mensagem: "Backend está rodando!" });
-});
 
 app.listen({ port: 8000 }, (err, address) => {
     if (err) {
