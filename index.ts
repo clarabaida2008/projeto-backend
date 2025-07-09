@@ -79,9 +79,31 @@ app.post('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
         }
     
     }
+    app.delete('/produto/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as any
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        })
+        const resultado = await conn.query("DELETE FROM produto WHERE idproduto = ?", [id])
+        const [dados] = resultado
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Produto excluído com sucesso!" })
+        } else {
+            reply.status(404).send({ mensagem: "Produto não encontrado!" })
+        }
+    } catch (erro) {
+        console.log(erro)
+        reply.status(400).send({ mensagem: "Erro ao excluir produto!" })
+    }
+})
 })
 
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////*/
 
 app.get('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
