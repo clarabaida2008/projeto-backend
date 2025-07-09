@@ -40,19 +40,19 @@ app.get('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
     }
 })
 app.post('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
-    const {idproduto,nomeproduto,precoproduto,categoriaproduto} = request.body as any
+    const {idproduto,nomeproduto,precoproduto,categoriaproduto,fornecedor_idfornecedor} = request.body as any
     try {
         const conn =  await mysql.createConnection({
             host: "localhost",
             user: 'root',
             password: "",
-            database: 'bancodedado',
+            database: 'bancomercado', // Corrigido para o mesmo banco dos outros endpoints
             port: 3306
         })
-        const resultado =  await conn.query("INSERT INTO produto (idproduto,nomeproduto,precoproduto,categoriaproduto) VALUES (?,?,?,?)",[idproduto,nomeproduto,precoproduto,categoriaproduto])
+        const resultado =  await conn.query("INSERT INTO produto (idproduto,nomeproduto,precoproduto,categoriaproduto,fornecedor_idfornecedor) VALUES (?,?,?,?,?)",[idproduto,nomeproduto,precoproduto,categoriaproduto,fornecedor_idfornecedor])
         const [dados, camposTabela] = resultado
         console.log(dados)
-        reply.status(200).send({idproduto,nomeproduto,precoproduto,categoriaproduto})
+        reply.status(200).send({idproduto,nomeproduto,precoproduto,categoriaproduto,fornecedor_idfornecedor})
     }
     catch (erro: any) {
         switch (erro.code) {
@@ -198,7 +198,7 @@ app.get('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
     }
 })
 app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
-    const {idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario} = request.body as any
+    const {idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario,produto_idproduto} = request.body as any
     try {
         const conn =  await mysql.createConnection({
             host: "localhost",
@@ -207,10 +207,10 @@ app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
             database: 'bancomercado',
             port: 3306
         })
-        const resultado =  await conn.query("INSERT INTO venda (idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario) VALUES (?,?,?,?,?)",[idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario])
+        const resultado =  await conn.query("INSERT INTO venda (idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario,produto_idproduto) VALUES (?,?,?,?,?,?)",[idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario,produto_idproduto])
         const [dados, camposTabela] = resultado
         console.log(dados)
-        reply.status(200).send({idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario})
+        reply.status(200).send({idvenda,datavenda,valorvenda,formapagamentovenda,funcionario_idfuncionario,produto_idproduto})
     }
     catch (erro: any) {
         switch (erro.code) {
@@ -244,7 +244,7 @@ app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
 app.get('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
         const conn =  await mysql.createConnection({
-            host: "localhost2",
+            host: "localhost",
             user: 'root',
             password: "",
             database: 'bancomercado',
@@ -277,19 +277,19 @@ app.get('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => 
     }
 })
 app.post('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => {
-    const {idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario} = request.body as any
+    const {idfuncionario,nomefuncionario,funcaofuncionario,cpf} = request.body as any
     try {
         const conn =  await mysql.createConnection({
-            host: "localhost2",
+            host: "localhost",
             user: 'root',
             password: "",
             database: 'bancomercado',
             port: 3306
         })
-        const resultado =  await conn.query("INSERT INTO funcionario (idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario) VALUES (?,?,?,?)",[idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario])
+        const resultado =  await conn.query("INSERT INTO funcionario (idfuncionario,nomefuncionario,funcaofuncionario,cpf) VALUES (?,?,?,?)",[idfuncionario,nomefuncionario,funcaofuncionario,cpf])
         const [dados, camposTabela] = resultado
         console.log(dados)
-        reply.status(200).send({idfuncionario,nomefuncionario,funcaofuncionario,cpffuncionario})
+        reply.status(200).send({idfuncionario,nomefuncionario,funcaofuncionario,cpf})
     }
     catch (erro: any) {
         switch (erro.code) {
