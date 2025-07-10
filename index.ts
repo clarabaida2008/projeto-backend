@@ -1,8 +1,11 @@
 import mysql, { Connection, ConnectionOptions } from 'mysql2/promise';
-import fastify, { FastifyRequest, FastifyReply } from 'fastify'
-import cors from '@fastify/cors'
-const app = fastify()
-app.register(cors)
+import fastify, { FastifyRequest, FastifyReply } from 'fastify';
+import cors from '@fastify/cors';
+const app = fastify();
+app.register(cors, {
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+});
 
 app.get('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -79,7 +82,35 @@ app.post('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
         }
     
     }
-    app.delete('/produto/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    
+})
+app.put('/produto/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    const { idproduto, nomeproduto, precoproduto, categoriaproduto, fornecedor_idfornecedor } = request.body as any;
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        });
+        const resultado = await conn.query(
+            "UPDATE produto SET idproduto = ?, nomeproduto = ?, precoproduto = ?, categoriaproduto = ?, fornecedor_idfornecedor = ? WHERE idproduto = ?",
+            [idproduto, nomeproduto, precoproduto, categoriaproduto, fornecedor_idfornecedor, id]
+        );
+        const [dados] = resultado;
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Produto atualizado com sucesso!" });
+        } else {
+            reply.status(404).send({ mensagem: "Produto não encontrado!" });
+        }
+    } catch (erro) {
+        console.log(erro);
+        reply.status(400).send({ mensagem: "Erro ao atualizar produto!" });
+    }
+});
+app.delete('/produto/:id', async (request: FastifyRequest, reply: FastifyReply) => {
         const { id } = request.params as any
     try {
         const conn = await mysql.createConnection({
@@ -100,7 +131,6 @@ app.post('/produto', async (request: FastifyRequest, reply: FastifyReply) => {
         console.log(erro)
         reply.status(400).send({ mensagem: "Erro ao excluir produto!" })
     }
-})
 })
 
 /*////////////////////////////////////////////////*/
@@ -179,6 +209,54 @@ app.post('/fornecedor', async (request: FastifyRequest, reply: FastifyReply) => 
                 break;
         }
     
+    }
+})
+app.put('/fornecedor/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    const { idfornecedor, nomefornecedor, cnpjfornecedor, cidadefornecedor } = request.body as any;
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        });
+        const resultado = await conn.query(
+            "UPDATE fornecedor SET idfornecedor = ?, nomefornecedor = ?, cnpjfornecedor = ?, cidadefornecedor = ? WHERE idfornecedor = ?",
+            [idfornecedor, nomefornecedor, cnpjfornecedor, cidadefornecedor, id]
+        );
+        const [dados] = resultado;
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Fornecedor atualizado com sucesso!" });
+        } else {
+            reply.status(404).send({ mensagem: "Fornecedor não encontrado!" });
+        }
+    } catch (erro) {
+        console.log(erro);
+        reply.status(400).send({ mensagem: "Erro ao atualizar fornecedor!" });
+    }
+});
+app.delete('/fornecedor/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        })
+        const resultado = await conn.query("DELETE FROM fornecedor WHERE idfornecedor = ?", [id])
+        const [dados] = resultado
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Fornecedor excluído com sucesso!" })
+        } else {
+            reply.status(404).send({ mensagem: "Fornecedor não encontrado!" })
+        }
+    } catch (erro) {
+        console.log(erro)
+        reply.status(400).send({ mensagem: "Erro ao excluir fornecedor!" })
     }
 })
 
@@ -261,6 +339,56 @@ app.post('/venda', async (request: FastifyRequest, reply: FastifyReply) => {
     }
 })
 
+app.delete('/venda/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        });
+        const resultado = await conn.query("DELETE FROM venda WHERE idvenda = ?", [id]);
+        const [dados] = resultado;
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Venda excluída com sucesso!" });
+        } else {
+            reply.status(404).send({ mensagem: "Venda não encontrada!" });
+        }
+    } catch (erro) {
+        console.log(erro);
+        reply.status(400).send({ mensagem: "Erro ao excluir venda!" });
+    }
+});
+
+app.put('/venda/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    const { idvenda, datavenda, valorvenda, formapagamentovenda, funcionario_idfuncionario, produto_idproduto } = request.body as any;
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        });
+        const resultado = await conn.query(
+            "UPDATE venda SET idvenda = ?, datavenda = ?, valorvenda = ?, formapagamentovenda = ?, funcionario_idfuncionario = ?, produto_idproduto = ? WHERE idvenda = ?",
+            [idvenda, datavenda, valorvenda, formapagamentovenda, funcionario_idfuncionario, produto_idproduto, id]
+        );
+        const [dados] = resultado;
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Venda atualizada com sucesso!" });
+        } else {
+            reply.status(404).send({ mensagem: "Venda não encontrada!" });
+        }
+    } catch (erro) {
+        console.log(erro);
+        reply.status(400).send({ mensagem: "Erro ao atualizar venda!" });
+    }
+});
+
 /*////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 app.get('/funcionario', async (request: FastifyRequest, reply: FastifyReply) => {
@@ -339,6 +467,55 @@ app.post('/funcionario', async (request: FastifyRequest, reply: FastifyReply) =>
     
     }
 })
+app.delete('/funcionario/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as any
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        })
+        const resultado = await conn.query("DELETE FROM funcionario WHERE idfuncionario = ?", [id])
+        const [dados] = resultado
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "funcionario excluído com sucesso!" })
+        } else {
+            reply.status(404).send({ mensagem: "funcionario não encontrado!" })
+        }
+    } catch (erro) {
+        console.log(erro)
+        reply.status(400).send({ mensagem: "Erro ao excluir funcionario!" })
+    }
+})
+
+app.put('/funcionario/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    const { idfuncionario, nomefuncionario, funcaofuncionario, cpf } = request.body as any;
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        });
+        const resultado = await conn.query(
+            "UPDATE funcionario SET idfuncionario = ?, nomefuncionario = ?, funcaofuncionario = ?, cpf = ? WHERE idfuncionario = ?",
+            [idfuncionario, nomefuncionario, funcaofuncionario, cpf, id]
+        );
+        const [dados] = resultado;
+        if ((dados as any).affectedRows > 0) {
+            reply.status(200).send({ mensagem: "Funcionário atualizado com sucesso!" });
+        } else {
+            reply.status(404).send({ mensagem: "Funcionário não encontrado!" });
+        }
+    } catch (erro) {
+        console.log(erro);
+        reply.status(400).send({ mensagem: "Erro ao atualizar funcionário!" });
+    }
+});
 
 app.listen({ port: 8000 }, (err, address) => {
     if (err) {
