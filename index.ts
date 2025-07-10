@@ -517,6 +517,36 @@ app.put('/funcionario/:id', async (request: FastifyRequest, reply: FastifyReply)
     }
 });
 
+
+// ROTA RELATÓRIO PRODUTOS E FORNECEDORES
+app.get('/relatorio-produtos-fornecedores', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+        const conn = await mysql.createConnection({
+            host: "localhost",
+            user: 'root',
+            password: "",
+            database: 'bancomercado',
+            port: 3306
+        });
+        const [dados] = await conn.query(`
+            SELECT 
+              produto.idproduto AS id_produto,
+              produto.nomeproduto AS produto,
+              produto.precoproduto AS valor,
+              fornecedor.idfornecedor AS id_fornecedor,
+              fornecedor.nomefornecedor AS fornecedor,
+              fornecedor.cnpjfornecedor AS cnpj,
+              fornecedor.cidadefornecedor AS telefone
+            FROM produto
+            INNER JOIN fornecedor ON produto.fornecedor_idfornecedor = fornecedor.idfornecedor
+        `);
+        reply.status(200).send(dados);
+    } catch (erro) {
+        console.log(erro);
+        reply.status(400).send({ mensagem: "Erro ao buscar relatório de produtos e fornecedores!" });
+    }
+});
+
 app.listen({ port: 8000 }, (err, address) => {
     if (err) {
         console.error(err)
