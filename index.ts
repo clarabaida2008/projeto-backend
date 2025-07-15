@@ -3,7 +3,7 @@ import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 const app = fastify();
 app.register(cors, {
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5174',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 });
 
